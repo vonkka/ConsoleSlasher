@@ -5,8 +5,7 @@ import Monster.Monster;
 
 public class Main {
     public static void main(String[] args) {
-        outer:
-        while (true) {
+        while (true) outer: {
             // START GAME
             ActionsInterface actions = new Actions();
 
