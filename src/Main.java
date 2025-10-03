@@ -5,6 +5,7 @@ import Monster.Monster;
 
 public class Main {
     public static void main(String[] args) {
+        outer:
         while (true) {
             // START GAME
             ActionsInterface actions = new Actions();
@@ -36,7 +37,11 @@ public class Main {
                 int battleResult = actions.startBattle(character, opponent);
                 if (battleResult == 0) {
                     actions.loseGame();
-                    return;
+                    if (actions.startAgain() == 0) {
+                        return;
+                    } else {
+                        break outer;
+                    }
                 } else if (battleResult == 1) {
                     // Change weapon
                     actions.changeWeapon(character, opponent.getReward());

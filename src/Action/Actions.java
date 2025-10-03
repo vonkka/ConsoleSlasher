@@ -59,6 +59,7 @@ public class Actions implements ActionsInterface{
     }
 
     public void nextAction() {
+        System.out.println("Enter anything to continue");
         scanner.nextLine();
     }
 
@@ -104,6 +105,7 @@ public class Actions implements ActionsInterface{
         String answer = scanner.nextLine().toLowerCase();
         while (!answer.equals("yes") && !answer.equals("no")) {
             System.out.println("Please print 'yes' or 'no'");
+            answer = scanner.nextLine().toLowerCase();
         }
         if (answer.equals("yes")) {
             return 1;
