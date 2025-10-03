@@ -7,5 +7,4 @@ public interface Specialization {
     int getLvl();
     int getHpPerLevel();
     Weapon getStartWeapon();
-    String consoleCompare();
 }

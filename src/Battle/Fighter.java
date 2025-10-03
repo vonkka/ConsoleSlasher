@@ -1,23 +1,22 @@
 package Battle;
 
-import CharachterClass.Barbarian;
-import CharachterClass.Robber;
-import CharachterClass.Specialization;
-import CharachterClass.Warrior;
+import CharachterClass.*;
 import Monster.*;
-import Character.MainCharacter;
-import Weapon.DmgType;
+import Weapon.*;
+import Character.*;
 
 import java.util.Random;
 
-public class Battler {
+public class Fighter implements FighterInterface {
     private final Random rand = new Random(System.currentTimeMillis());
 
-    public int attack(Battler battler, int move) {
+    public int attack(Fighter fighter, int move) {
         int dmg = 0;
         move = (int)Math.ceil(move / 2.);
+
+        // HERO ATTACK
         if (this instanceof MainCharacter) {
-            Monster opp = (Monster) battler;
+            Monster opp = (Monster) fighter;
             int check = rand.nextInt(((MainCharacter) this).getAgility() + opp.getAgility());
             if (check >= opp.getAgility()) {
                 // Strength
@@ -63,9 +62,12 @@ public class Battler {
             } else {
                 System.out.println("Hero missed!");
             }
+
+        // MONSTER ATTACK
         } else if (this instanceof Monster) {
-            MainCharacter opp = (MainCharacter) battler;
+            MainCharacter opp = (MainCharacter) fighter;
             if (this instanceof Dragon && (move % 3) == 0) {
+                System.out.println("Dragon burns you for 3 damage");
                 dmg += 3;
             }
             if (rand.nextInt(((Monster) this).getAgility() + opp.getAgility()) >= opp.getAgility()) {
@@ -94,11 +96,5 @@ public class Battler {
             }
         }
         return dmg;
-    }
-
-    public void displayBattleStatus(Battler battler, int move) {
-        move = (int)Math.ceil(move / 2.);
-        System.out.println(battler);
-        System.out.println("Move: " + move + '\n');
     }
 }

@@ -8,20 +8,6 @@ public class Barbarian implements Specialization {
     private final int hpPerLevel = 6;
     private final Weapon startWeapon = new Club();
 
-    public String head = "" +
-            "   ┌─────────── ┐\n" +
-            "  │~~~~~~~~~~~~~~│\n" +
-            " │     ●     ●    │\n" +
-            " │                │\n" +
-            " │       ▴       │\n" +
-            " │   \\         / │\n" +
-            " │    \\ ───── /  │\n" +
-            "  │             │\n" +
-            "   └─╦───────╦─┘\n" +
-            "    ╱│       │╲\n" +
-            "   ╱ │       │ ╲\n" +
-            "  ╱  │       │  ╲";
-
     public Barbarian() {
         this.lvl = 1;
     }
@@ -36,11 +22,6 @@ public class Barbarian implements Specialization {
 
     public Weapon getStartWeapon() {
         return startWeapon;
-    }
-
-    @Override
-    public String consoleCompare() {
-        return "barbarian";
     }
 
     @Override

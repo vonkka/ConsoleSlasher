@@ -1,11 +1,11 @@
 package Monster;
 
-import Battle.Battler;
+import Battle.Fighter;
 import Weapon.Weapon;
 import Weapon.Dagger;
 import Character.MainCharacterInterface;
 
-public class Goblin extends Battler implements Monster {
+public class Goblin extends Fighter implements Monster {
     private final int agility = 1;
     private final int strength = 1;
     private final int stamina = 1;

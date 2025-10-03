@@ -1,14 +1,13 @@
 package Character;
 
 import CharachterClass.*;
-import Monster.Monster;
 import Weapon.Weapon;
 
-import java.util.Objects;
+import java.util.ArrayList;
 import java.util.Random;
 import Battle.*;
 
-public class MainCharacter extends Battler implements MainCharacterInterface {
+public class MainCharacter extends Fighter implements MainCharacterInterface {
     private final int MAX_LEVEL = 3;
 
     private int strength;
@@ -19,26 +18,26 @@ public class MainCharacter extends Battler implements MainCharacterInterface {
     private int damage;
 
     private Weapon weapon;
-    private Specialization[] specialization;
+    private ArrayList<Specialization> specialization;
 
     private int lvl;
 
-    public MainCharacter() {
-        Random rand = new Random(System.currentTimeMillis());
-        this.setAgility(1 + rand.nextInt(3));
-        this.setStrength(1 + rand.nextInt(3));
-        this.setStamina(1 + rand.nextInt(3));
-        this.setLvl(1);
-        this.specialization = new Specialization[3];
+    public MainCharacter(int agility, int strength, int stamina) {
+        this.strength = strength;
+        this.agility = agility;
+        this.stamina = stamina;
+        this.specialization = new ArrayList<>();
     }
 
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        for (int i = 0; i < this.specialization.length; i++) {
-            if (this.specialization[i] != null) {
-                str.append(this.specialization[i].toString());
-            }
+        for (Specialization value : this.specialization) {
+            str.append(value.toString());
+        }
+
+        if (this.specialization.isEmpty()) {
+            str.append("None");
         }
 
         return  "Hero \n" +
@@ -50,6 +49,48 @@ public class MainCharacter extends Battler implements MainCharacterInterface {
                 "Weapon: " + this.weapon + '\n' +
                 "Lvl: " + this.lvl + '\n' +
                 "Specialization: " + str;
+    }
+
+
+    @Override
+    public Weapon equipWeapon(Weapon weapon) {
+        this.damage += weapon.getDamage() - this.weapon.getDamage();
+        this.weapon = weapon;
+        return weapon;
+    }
+
+    public int lvlUp(Specialization specialization) {
+        this.health += specialization.getHpPerLevel() + this.stamina;
+        ++this.lvl;
+
+        for (Specialization value : this.specialization) {
+            if (value.getClass() == specialization.getClass()) {
+                value.lvlUp();
+
+                if (value.getLvl() == 3) {
+                    if (value instanceof Warrior) {
+                        ++this.strength;
+                        ++this.damage;
+                    } else if (value instanceof Barbarian) {
+                        ++this.stamina;
+                        ++this.health;
+                    }
+                } else if (value.getLvl() == 2 && value instanceof Robber) {
+                    ++this.agility;
+                }
+
+                return this.lvl;
+            }
+        }
+
+        // if it's first specialization
+        if (this.specialization.isEmpty()) {
+            this.setWeapon(specialization.getStartWeapon());
+            this.damage += specialization.getStartWeapon().getDamage();
+        }
+        // if it's new specialization
+        this.specialization.add(specialization);
+        return this.lvl;
     }
 
     public int getStrength() {
@@ -100,12 +141,8 @@ public class MainCharacter extends Battler implements MainCharacterInterface {
         this.weapon = weapon;
     }
 
-    public Specialization[] getSpecializations() {
+    public ArrayList<Specialization> getSpecializations() {
         return specialization;
-    }
-
-    public void setSpecialization(Specialization[] specialization) {
-        this.specialization = specialization;
     }
 
     public int getLvl() {
@@ -116,95 +153,7 @@ public class MainCharacter extends Battler implements MainCharacterInterface {
         this.lvl = lvl;
     }
 
-    @Override
-    public Weapon equipWeapon(Weapon weapon) {
-        this.damage += weapon.getDamage() - this.weapon.getDamage();
-        this.weapon = weapon;
-        return weapon;
-    }
-
-    public Specialization[] addSpecialization(Specialization specialization) {
-        int i = 0;
-        while (this.specialization[i] != null) {
-            if (this.specialization[i].getClass() == specialization.getClass()) {
-                this.specialization[i].lvlUp();
-                this.setHealth(this.getHealth() + specialization.getHpPerLevel());
-                return this.specialization;
-            }
-            ++i;
-        }
-        if (i == 0) {
-            this.setWeapon(specialization.getStartWeapon());
-            this.setDamage(this.getDamage() + this.getWeapon().getDamage());
-        }
-        this.specialization[i] = specialization;
-        this.setHealth(this.getHealth() + specialization.getHpPerLevel());
-        if (i > 0) {
-            this.setHealth(this.getHealth() + this.getStamina());
-        }
-        return this.specialization;
-    }
-
-    @Override
-    public int lvlUp(Specialization specialization) {
-        if (this.lvl < this.MAX_LEVEL) {
-            ++this.lvl;
-            int i = 0;
-            while (this.specialization[i] != null) {
-                if (this.specialization[i].getClass() == specialization.getClass()) {
-                    this.specialization[i].lvlUp();
-                    this.setHealth(this.getHealth() + specialization.getHpPerLevel() + this.getStamina());
-                    if (this.specialization[i].getLvl() == 3) {
-                        if (this.specialization[i] instanceof Warrior) {
-                            ++this.strength;
-                        } else if (this.specialization[i] instanceof Barbarian) {
-                            ++this.stamina;
-                        }
-                    } else if (this.specialization[i].getLvl() == 2) {
-                        if (this.specialization[i] instanceof Robber) {
-                            ++this.agility;
-                        }
-                    }
-                    return this.lvl;
-                }
-                ++i;
-            }
-            addSpecialization(specialization);
-        }
-        return this.lvl;
-    }
-
-    @Override
-    public int startBattle(Monster monster) {
-        Battler[] battlers = new Battler[2];
-        if (this.getAgility() >= monster.getAgility()) {
-            battlers[0] = this;
-            battlers[1] = (Battler) monster;
-        } else {
-            battlers[0] = (Battler) monster;
-            battlers[1] = this;
-        }
-
-        int i = 0;
-        int maxHP = this.getHealth();
-        while (this.getHealth() > 0 && monster.getHealth() > 0) {
-            int dmg = battlers[i % 2].attack(battlers[(i + 1) % 2], i + 1);
-            if (dmg > 0) {
-                if (battlers[(i + 1) % 2] instanceof Monster) {
-                    ((Monster) (battlers[(i + 1) % 2])).setHealth(((Monster) battlers[(i + 1) % 2]).getHealth() - dmg);
-                    monster.setHealth(((Monster) (battlers[(i + 1) % 2])).getHealth());
-                } else {
-                    ((MainCharacter)battlers[(i + 1) % 2]).setHealth(((MainCharacter)battlers[(i + 1) % 2]).getHealth() - dmg);
-                    this.setHealth(((MainCharacter)battlers[(i + 1) % 2]).getHealth());
-                }
-            }
-            battlers[i % 2].displayBattleStatus(battlers[(i+1) % 2], i + 1);
-            ++i;
-        }
-        if (this.getHealth() > 0) {
-            this.setHealth(maxHP);
-            return 1;
-        }
-        return 0;
+    public int getMAX_LEVEL() {
+        return MAX_LEVEL;
     }
 }

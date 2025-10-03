@@ -1,10 +1,12 @@
 package Monster;
-import Battle.Battler;
+import Battle.Fighter;
 import Weapon.Spear;
 import Character.MainCharacterInterface;
 import Weapon.Weapon;
 
-public class Slime extends Battler implements Monster {
+
+// DOES NOT TAKE DMG FORM SLASH
+public class Slime extends Fighter implements Monster {
     private final int strength = 3;
     private final int agility = 1;
     private final int stamina = 2;

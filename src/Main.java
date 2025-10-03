@@ -1,60 +1,61 @@
 import Action.Actions;
 import Action.ActionsInterface;
-import CharachterClass.*;
 import Character.*;
 import Monster.Monster;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        // START GAME
-        // (0 = ROBBER, 1 = WARRIOR, 2 = BARBARIAN)
-        Scanner scanner = new Scanner(System.in);
-        ActionsInterface actions = new Actions();
-        MainCharacterInterface character = actions.createMainCharacter();
-        System.out.println(character);
+        while (true) {
+            // START GAME
+            ActionsInterface actions = new Actions();
 
-        // CHOOSE SPECIALIZATION
-        System.out.println("Choose your start class: ");
-        Specialization specialization = switch (scanner.nextLine()) {
-            case "robber" -> new Robber();
-            case "warrior" -> new Warrior();
-            case "barbarian" -> new Barbarian();
-            default -> null;
-        };
-        character.addSpecialization(specialization);
-        System.out.println(character);
+            // RANDOM STATS
+            MainCharacterInterface character = actions.createMainCharacter();
+            System.out.println("That are stats of your future character:");
+            System.out.println(character);
 
-        // BATTLES
-        for (int i = 0; i < actions.getNUM_BATTLES(); ++i) {
+            // CHOOSE SPECIALIZATION
+            System.out.println("""
+                    Now you are to choose a class\s
+                    robber\s
+                    warrior\s
+                    barbarian
+                    """);
+            character.lvlUp(actions.chooseSpecialization());
 
-            Monster opponent = actions.getMonsters()[i];
-            System.out.println("Battle started vs " + opponent);
-            if (character.startBattle(opponent) == 0) {
-                actions.loseGame();
+
+            // BATTLES
+            System.out.println("Starting battles");
+            for (int i = 0; i < actions.getNUM_BATTLES(); ++i) {
+                System.out.println("\nNow your character has those stats:");
+                System.out.println(character);
+
+                Monster opponent = actions.getMonsters().get(i);
+                actions.nextAction();
+                System.out.println("Battle " + (i + 1) + " started vs " + opponent);
+                int battleResult = actions.startBattle(character, opponent);
+                if (battleResult == 0) {
+                    actions.loseGame();
+                    return;
+                } else if (battleResult == 1) {
+                    // Change weapon
+                    actions.changeWeapon(character, opponent.getReward());
+
+                    // Lvlup class
+                    if (character.getLvl() < character.getMAX_LEVEL()) {
+                        System.out.println("Choose class to lvlUp: ");
+                        character.lvlUp(actions.chooseSpecialization());
+                    } else {
+                        System.out.println("You reached maximum level " + character.getLvl());
+                    }
+                }
+
+            }
+            actions.winGame();
+
+            if (actions.startAgain() == 0) {
                 return;
             }
-            // Change weapon
-            System.out.println("Do you want to change your weapon on " + opponent.getReward());
-            if (scanner.nextLine().equals("yes")) {
-                character.equipWeapon(opponent.getReward());
-            }
-            // Lvlup class
-            if (character.getLvl() < 3) {
-                System.out.println("Choose class to lvlUp: ");
-                String numSpec = scanner.nextLine();
-                character.lvlUp(switch (numSpec) {
-                    case "robber" -> new Robber();
-                    case "warrior" -> new Warrior();
-                    case "barbarian" -> new Barbarian();
-                    default -> null;
-                });
-            } else {
-                System.out.println("You reached maximum level " + character.getLvl());
-            }
-
         }
-
-        actions.winGame();
     }
 }

@@ -1,10 +1,10 @@
 package Monster;
-import Battle.Battler;
+import Battle.Fighter;
 import Weapon.Sword;
 import Character.MainCharacterInterface;
 import Weapon.Weapon;
 
-public class Ghost extends Battler implements Monster {
+public class Ghost extends Fighter implements Monster {
     private final int agility = 3;
     private final int strength = 1;
     private final int stamina = 1;

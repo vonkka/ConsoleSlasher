@@ -8,21 +8,6 @@ public class Robber implements Specialization{
     private final int hpPerLevel = 4;
     private Weapon startWeapon = new Dagger();
 
-    public String head = "" +
-            "   ┌──────────────\\\n" +
-            "   | ─────────── |     \n" +
-            "  │ │            │  \\\n" +
-            " │ │   ●     ●    │  |\n" +
-            " │ │              │  |\n" +
-            " │ │     ▴       │   |\n" +
-            " │ │             │   |\n" +
-            " │  │   ─────    │  /\n" +
-            "  │  │─────────│/|─/\n" +
-            "   └─╦───────╦─┘\n" +
-            "    ╱│       │╲\n" +
-            "   ╱ │       │ ╲\n" +
-            "  ╱  │       │  ╲";
-
     public Robber() {
         this.lvl = 1;
     }
@@ -37,11 +22,6 @@ public class Robber implements Specialization{
 
     public Weapon getStartWeapon() {
         return startWeapon;
-    }
-
-    @Override
-    public String consoleCompare() {
-        return "robber";
     }
 
     @Override

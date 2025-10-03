@@ -1,14 +1,16 @@
 package Character;
 
+import Battle.FighterInterface;
 import CharachterClass.Specialization;
 import Monster.Monster;
 import Weapon.Weapon;
 
-public interface MainCharacterInterface {
+import java.util.ArrayList;
+
+public interface MainCharacterInterface extends FighterInterface {
     Weapon equipWeapon(Weapon weapon);
-    Specialization[] addSpecialization(Specialization specialization);
     int lvlUp(Specialization specialization);
-    int startBattle(Monster monster);
-    Specialization[] getSpecializations();
+    ArrayList<Specialization> getSpecializations();
     int getLvl();
+    int getMAX_LEVEL();
 }
